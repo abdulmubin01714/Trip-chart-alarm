@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>রিসেট</title>
+<style>body{font:16px/1.6 system-ui,sans-serif;padding:24px;max-width:480px;margin:auto}button{padding:12px 16px;border:0;border-radius:10px;background:#0b6bcb;color:#fff;font:inherit}</style>
+</head>
+<body>
+<h2>পুরোনো কপি মুছে ফেলা হচ্ছে…</h2>
+<p id="s">অপেক্ষা করুন</p>
+<p><button id="b" hidden>পেজে যান</button></p>
+<script>
+(async()=>{
+  const s=document.getElementById('s');
+  let n=0,c=0;
+  try{
+    if('serviceWorker' in navigator){
+      const regs=await navigator.serviceWorker.getRegistrations();
+      for(const r of regs){await r.unregister();n++;}
+    }
+    if(window.caches){
+      const keys=await caches.keys();
+      for(const k of keys){await caches.delete(k);c++;}
+    }
+    s.textContent='পরিষ্কার হয়েছে (সার্ভিস ওয়ার্কার '+n+'টা, ক্যাশ '+c+'টা)। এখন নতুন পেজ খুলছে…';
+  }catch(e){s.textContent='কিছু ধাপ হয়নি: '+e.message;}
+  const go='./?v='+Date.now();
+  const b=document.getElementById('b');
+  b.hidden=false;b.onclick=()=>location.replace(go);
+  setTimeout(()=>location.replace(go),1500);
+})();
+</script>
+</body>
+</html>
